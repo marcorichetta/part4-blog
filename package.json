@@ -4,9 +4,9 @@
   "description": "Blog list app",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "watch": "nodemon index.js",
-    "test": "jest --verbose",
+    "start": "NODE_ENV=production node index.js",
+    "watch": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --verbose --runInBand",
     "lint": "eslint ."
   },
   "author": "Marco Richetta",
@@ -21,7 +21,8 @@
   "devDependencies": {
     "eslint": "^6.1.0",
     "jest": "^24.8.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "testEnvironment": "node"

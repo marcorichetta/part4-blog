@@ -1,23 +1,34 @@
 const config = require('./utils/config')
 const express = require('express')
-const app = express()
 const bodyParser = require('body-parser')
+
+const app = express()
+
 const cors = require('cors')
 const blogsRouter = require('./controllers/blogs')
+const middleware = require('./utils/middleware')
 const mongoose = require('mongoose')
+const logger = require('./utils/logger')
 
+// Logging connection
+logger.info('connecting to', config.MONGODB_URI)
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
     .then(() => {
-        console.log('connected to MongoDB')
+        logger.info('connected to MongoDB')
     })
     .catch((error) => {
-        console.log('error connecting to MongoDB: ', error.message)
+        logger.error('error connecting to MongoDB: ', error.message)
     })
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(middleware.requestLogger)
 
+// Esto define la ruta principal de la app
 app.use('/api/blogs', blogsRouter)
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
 
 module.exports = app
