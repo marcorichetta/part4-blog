@@ -108,11 +108,53 @@ describe('4.8 - 4.12 tests', () => {
     })
 })
 
-test('dummy returns one', () => {
-    const blogs = []
+describe('4.13 - 4.14 tests', () => {
 
-    const result = helper.dummy(blogs)
-    expect(result).toBe(1)
+    test('deleting a single post', async () => {
+
+        // Get blogs in DB
+        const blogsAtStart = await helper.blogsInDb()
+
+        // Select 1st blog
+        const blogToDelete = blogsAtStart[0]
+
+        // Delete it
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .expect(204)
+
+        // Get blogs after deletion and compare with original DB
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd.length).toBe(helper.initialBlogs.length - 1)
+
+        // Map blogs' titles into contents
+        const contents = blogsAtEnd.map(b => b.title)
+        // Check the deleted blog isn't in contents
+        expect(contents).not.toContain(blogToDelete.title)
+    })
+
+    test('updating the likes of a post', async () => {
+        
+        // Get blogs from DB
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToUpdate = blogsAtStart[0]
+
+        // Body to be sent
+        updatedInfo = {
+            likes: 999
+        }
+
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(updatedInfo)
+            .expect(200)
+
+        // Check the updated blog
+        const blogsAtEnd = await helper.blogsInDb()
+        const updatedBlog = blogsAtEnd[0]
+
+        expect(updatedBlog.likes).toBe(999)
+    })
 })
 
 describe('total likes', () => {
@@ -150,6 +192,13 @@ describe('favorite blog', () => {
         expect(result).toEqual(expected)
     })
 
+})
+
+test('dummy returns one', () => {
+    const blogs = []
+
+    const result = helper.dummy(blogs)
+    expect(result).toBe(1)
 })
 
 afterAll(() => {

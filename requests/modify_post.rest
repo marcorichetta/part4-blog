@@ -1,7 +1,6 @@
-PUT http://localhost:3001/api/notes/5d3cd162ba6f4a3be15cae01 HTTP/1.1
+PUT http://localhost:3003/api/blogs/5d4aedcd4eebcf679912a053 HTTP/1.1
 Content-Type: application/json
 
 {
-    "content": "This note IS saved to server!",
-    "important": true
+    "likes": 11
 }
