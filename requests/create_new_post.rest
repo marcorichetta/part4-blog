@@ -1,10 +1,11 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjVkNjU0ODRjNjZhNGUzMmNmMGNiNjZhOCIsImlhdCI6MTU2NjkyNDY1Mn0.vqrZ5dyvJWbpAeOTBYPs-hnaJ1GDz358hek1bUpd1to
 
 {
-    "title": "1st post",
+    "title": "Testing user auth",
     "author": "Marco",
-    "url": "git.com",
-    "likes": 99,
+    "url": "me.org",
+    "likes": 1,
     "userId": "5d65484c66a4e32cf0cb66a8"
 }

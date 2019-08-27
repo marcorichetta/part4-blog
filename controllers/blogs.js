@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
 
@@ -10,7 +11,7 @@ blogsRouter.get('/', async (request, response) => {
             username: 1,
             name: 1
         })
-        
+
     response.json(blogs.map(blog => blog.toJSON()))
 
     /* Before async / await
@@ -35,39 +36,63 @@ blogsRouter.get('/:id', async (request, response, next) => {
     }
 })
 
+/**
+ * Separa el token del header `authorization`
+ * @param {*} request 
+ */
+const getTokenFrom = request => {
+    const authorization = request.get('authorization')
+    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+        return authorization.substring(7)
+    }
+
+    return null
+}
+
 blogsRouter.post('/', async (request, response, next) => {
     const body = request.body
 
-    // Retrieve the User from DB
-    const user = await User.findById(body.userId)
+    const token = getTokenFrom(request)
 
-    // Create a new blog object
-    const blog = new Blog({
-        title: body.title,
-        author: body.author,
-        url: body.url,
-        likes: body.likes,
-        user: user._id // _id because is retrieved from Mongo
-    })
+    try {
 
-    // If title AND url are missing, return 400
-    if (!blog.title && !blog.url) {
-        response.status(400).end()
-    } else {
-
-        try {
-            const savedBlog = await blog.save()
-
-            // Add and save the blog to the user's blogs
-            user.blogs = user.blogs.concat(savedBlog._id)
-            await user.save()
-
-            response.status(201).json(savedBlog.toJSON())
-        } catch (exception) {
-            next(exception)
+        // Verify and decode the token
+        const decodedToken = jwt.verify(token, process.env.SECRET)
+        if (!token || !decodedToken.id) {
+            return response.status(401).json({
+                error: 'missing or invalid token'
+            })
         }
 
+        // Find the user with the token information
+        const user = await User.findById(decodedToken.id)
+
+        // Create a new blog object
+        const blog = new Blog({
+            title: body.title,
+            author: body.author,
+            url: body.url,
+            likes: body.likes,
+            user: user._id // _id because is retrieved from Mongo
+        })
+
+        // If title AND url are missing, return 400
+        if (!blog.title && !blog.url) {
+            response.status(400).end()
+        }
+
+        const savedBlog = await blog.save()
+
+        // Add and save the blog to the user's blogs
+        user.blogs = user.blogs.concat(savedBlog._id)
+        await user.save()
+
+        response.status(201).json(savedBlog.toJSON())
+
+    } catch (exception) {
+        next(exception)
     }
+
 })
 
 blogsRouter.put('/:id', async (request, response, next) => {
