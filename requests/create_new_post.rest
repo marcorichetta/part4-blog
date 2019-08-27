@@ -5,5 +5,6 @@ Content-Type: application/json
     "title": "1st post",
     "author": "Marco",
     "url": "git.com",
-    "likes": 99
+    "likes": 99,
+    "userId": "5d65484c66a4e32cf0cb66a8"
 }

@@ -1,9 +1,16 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
 
-    const blogs = await Blog.find({})
+    const blogs = await Blog
+        .find({})
+        .populate('user', {
+            username: 1,
+            name: 1
+        })
+        
     response.json(blogs.map(blog => blog.toJSON()))
 
     /* Before async / await
@@ -29,7 +36,19 @@ blogsRouter.get('/:id', async (request, response, next) => {
 })
 
 blogsRouter.post('/', async (request, response, next) => {
-    const blog = new Blog(request.body)
+    const body = request.body
+
+    // Retrieve the User from DB
+    const user = await User.findById(body.userId)
+
+    // Create a new blog object
+    const blog = new Blog({
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        likes: body.likes,
+        user: user._id // _id because is retrieved from Mongo
+    })
 
     // If title AND url are missing, return 400
     if (!blog.title && !blog.url) {
@@ -38,6 +57,11 @@ blogsRouter.post('/', async (request, response, next) => {
 
         try {
             const savedBlog = await blog.save()
+
+            // Add and save the blog to the user's blogs
+            user.blogs = user.blogs.concat(savedBlog._id)
+            await user.save()
+
             response.status(201).json(savedBlog.toJSON())
         } catch (exception) {
             next(exception)

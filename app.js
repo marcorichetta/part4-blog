@@ -5,7 +5,10 @@ const bodyParser = require('body-parser')
 const app = express()
 
 const cors = require('cors')
+
 const blogsRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
+
 const middleware = require('./utils/middleware')
 const mongoose = require('mongoose')
 const logger = require('./utils/logger')
@@ -25,8 +28,9 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(middleware.requestLogger)
 
-// Esto define la ruta principal de la app
+// Definir las rutas de la app
 app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
