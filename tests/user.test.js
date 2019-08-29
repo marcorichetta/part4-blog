@@ -61,6 +61,56 @@ describe('when there is initially one user at db', () => {
         // Check the user hasn't been created
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd.length).toBe(usersAtStart.length)
+    })
 
+    test('creation fails if username length is < 3', async () => {
+
+        const usersAtStart = await helper.usersInDb()
+
+        // User with short username
+        const newUser = {
+            username: 'ab',
+            name: 'shortName',
+            password: 'asd',
+        }
+
+        // Save the request response and check
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        // Semi-regex Mongo validation error
+        expect(result.body.error).toContain('`username` ' + `(\`${newUser.username}\`) is shorter than the minimum allowed`)  
+
+        // Check the user hasn't been created
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd.length).toBe(usersAtStart.length)
+    })
+
+    test('creation fails if password length is < 3', async () => {
+
+        const usersAtStart = await helper.usersInDb()
+
+        // User with short password
+        const newUser = {
+            username: 'dude',
+            name: 'shortPassword',
+            password: 'ab',
+        }
+
+        // Save the request response and check
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+        
+        expect(result.body.error).toContain('Password must be at least 3 characters long')
+
+        // Check the user hasn't been created
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd.length).toBe(usersAtStart.length)
     })
 })

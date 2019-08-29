@@ -22,6 +22,7 @@ blogsRouter.get('/', async (request, response) => {
         }) */
 })
 
+// 4.15: bloglist expansion, step4
 blogsRouter.get('/:id', async (request, response, next) => {
     try {
         const blog = await Blog.findById(request.params.id)
