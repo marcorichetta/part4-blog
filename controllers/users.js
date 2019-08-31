@@ -15,7 +15,6 @@ usersRouter.get('/', async (request, response) => {
             title: 1,
             author: 1,
             url: 1,
-            likes: 1
         })
 
     response.json(users.map(u => u.toJSON()))

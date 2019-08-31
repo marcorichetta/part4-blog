@@ -3,9 +3,9 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjVkNjU0ODRjNjZhNGUzMmNmMGNiNjZhOCIsImlhdCI6MTU2NjkyNDY1Mn0.vqrZ5dyvJWbpAeOTBYPs-hnaJ1GDz358hek1bUpd1to
 
 {
-    "title": "Testing user auth",
+    "title": "Testing middleware extraction",
     "author": "Marco",
     "url": "me.org",
-    "likes": 1,
+    "likes": 12,
     "userId": "5d65484c66a4e32cf0cb66a8"
 }
