@@ -105,9 +105,35 @@ blogsRouter.put('/:id', async (request, response, next) => {
 
 blogsRouter.delete('/:id', async (request, response, next) => {
     try {
-        await Blog.findByIdAndRemove(request.params.id)
-        // After deletion, send 204 No Content
-        response.status(204).end()
+
+        // Verify and decode the token
+        const decodedToken = jwt.verify(request.token, process.env.SECRET)
+        if (!request.token || !decodedToken.id) {
+            return response.status(401).json({
+                error: 'missing or invalid token'
+            })
+        }
+
+        // Find the user with the token information
+        const userId = decodedToken.id
+
+        // Find the blog to delete
+        const blogToDelete = await Blog.findById(request.params.id)
+
+        // The user in the blog is an object
+        if (blogToDelete.user.toString() === userId) {
+
+            await Blog.findByIdAndRemove(blogToDelete._id)
+
+            // After deletion, send 204 No Content
+            response.status(204).end()
+
+        } else {
+            return response.status(401).json({
+                error: 'You are not allowed to delete this post.'
+            })
+        }
+
     } catch (exception) {
         next(exception)
     }
