@@ -1,9 +1,9 @@
-## Part 4 | Fullstack course
-***
+# Part 4 | Fullstack course
 ### Blog App Backend
 
 - The app allows users to create blog posts
 - The documents are hosted in a MongoDB Cluster at https://cloud.mongodb.com
+- Clone and run `npm run swatch`
 
 ### Contents
 

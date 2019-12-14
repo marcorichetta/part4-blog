@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs/5df523a3a6e39121f908d0b6 HTTP/1.1
+Content-Type: application/json
+
+{
+    "comments" : [
+        "1st comment",
+        "2nd",
+        "A new comment arises!"],
+    "newComment": "Now showing comments on frontend"
+}

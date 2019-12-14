@@ -37,8 +37,7 @@ blogsRouter.get('/:id', async (request, response, next) => {
     }
 })
 
-
-
+// Route to create new blogs
 blogsRouter.post('/', async (request, response, next) => {
     const body = request.body
 
@@ -83,6 +82,36 @@ blogsRouter.post('/', async (request, response, next) => {
 
 })
 
+/**
+ * Route to add comments to the posts
+ */
+blogsRouter.post('/:id', async (request, response, next) => {
+    const body = request.body
+
+    // Extract the comment from the body
+    const newComment = body.newComment
+
+    // Concat the new comment to the old ones and 
+    // and save them into an object to be sent
+    const blogComment = {
+        comments: body.comments.concat(newComment)
+    }
+
+    try {
+        const updatedBlog = await Blog.
+            // new: true returns the updated object in the response
+            findByIdAndUpdate(request.params.id, blogComment, { new: true }) 
+
+        response.json(updatedBlog.toJSON())
+
+    } catch (exception) {
+        next(exception)
+    }
+})
+
+/**
+ * Route to update blogs likes
+ */
 blogsRouter.put('/:id', async (request, response, next) => {
     const body = request.body
 

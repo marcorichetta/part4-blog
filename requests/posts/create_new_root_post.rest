@@ -3,9 +3,8 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjVkNjU0ODRjNjZhNGUzMmNmMGNiNjZhOCIsImlhdCI6MTU2NjkyNDY1Mn0.vqrZ5dyvJWbpAeOTBYPs-hnaJ1GDz358hek1bUpd1to
 
 {
-    "title": "Testing middleware extraction",
-    "author": "Marco",
-    "url": "me.org",
-    "likes": 12,
+    "title": "New root post",
+    "author": "Root",
+    "url": "root.org",
     "userId": "5d65484c66a4e32cf0cb66a8"
 }
