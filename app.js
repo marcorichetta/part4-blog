@@ -37,6 +37,9 @@ app.use(bodyParser.json())
 app.use(middleware.tokenExtractor)
 app.use(middleware.requestLogger)
 
+// Buscar el front en /build
+app.use(express.static('build'))
+
 // Definir las rutas de la app
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
